@@ -4,33 +4,62 @@
 using namespace std;
 
 template<typename T>
-class Puzzle<T>
+class Puzzle
 {
 public:
-	Puzzle(int = 9, istream&);
+	Puzzle(int = 9);
 
 	int size();
 	void set(int, int, T);
 	T get(int, int);
 
-	friend istream& operator>>(Puzzle<T>&, istream&);
-	typedef vector<vector<T>> Board;
+	template<typename U>
+	friend istream& operator>>(istream&, Puzzle<U>&);
+	template<typename U>
+	friend ostream& operator<<(ostream&, Puzzle<U>&);
+
+	typedef vector<vector<T> > Board;
 private:
 	Board board;
 };
 
 template<typename T>
-Puzzle<T>::Puzzle(int size, istream in&)
+istream& operator>>(istream& in, Puzzle<T>& puzz)
+{
+	T val;
+	for (int r = 0; r < puzz.size(); r++)
+	{
+		for (int c = 0; c < puzz.size(); c++)
+		{
+			in >> val;
+			puzz.board[r][c] = val;
+		}
+	}
+	return in;
+}
+
+template<typename T>
+ostream& operator<<(ostream& out, Puzzle<T>& puzz)
+{
+	for (int r = 0; r < puzz.size(); r++)
+	{
+		for (int c = 0; c < puzz.size(); c++)
+		{
+			out << puzz.board[r][c] << " ";
+		}
+		out << endl;
+	}
+
+	return out;
+}
+
+template<typename T>
+Puzzle<T>::Puzzle(int size)
 {
 	T temp;
 	for (int r = 0; r < size; r++)
 	{
 		vector<T> row(size, 0);
-		for (int c = 0; c < size; c++)
-		{
-			in >> temp;
-			row.push_back(temp);
-		}
 		board.push_back(row);
 	}
 }
