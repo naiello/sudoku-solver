@@ -18,6 +18,11 @@ int main(int argc, char** argv)
 	}
 
 	ifstream file(filename.c_str());
+	if (!file.is_open())
+	{
+		cout << "Failed to open " << filename << endl;
+		return 1;
+	}
 	file >> puzz;
 	file.close();
 
