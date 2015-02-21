@@ -8,26 +8,26 @@ template<typename T>
 class Puzzle
 {
 public:
-	Puzzle(int = 9, T = 0);
+	Puzzle(int = 9, T = 0);			// Takes an int that sets size of board and a T to use as the default value (usually 0 for ints)
 
-	int size();
-	void set(int, int, T);
-	T get(int, int);
-	bool complete();
+	int size();				// Returns the size of the puzzle (puzzle assumed square)
+	void set(int, int, T);			// Sets a certain square of the puzzle. Does nothing if changing would result in a duplicate value in a row, col or box
+	T get(int, int);			// Gets the value of a square of the puzzle
+	bool complete();			// Checks to see if the puzzle has been completed
 
 	template<typename U>
-	friend istream& operator>>(istream&, Puzzle<U>&);
+	friend istream& operator>>(istream&, Puzzle<U>&);	// Load the puzzle from an input stream
 	template<typename U>
-	friend ostream& operator<<(ostream&, Puzzle<U>&);
+	friend ostream& operator<<(ostream&, Puzzle<U>&);	// Write the puzzle to a stream
 
 	typedef vector<vector<T> > Board;
 private:
 	Board board;
 	T defVal;
 
-	bool colContains(int, T);
-	bool rowContains(int, T);
-	bool boxContains(int, int, T);
+	bool colContains(int, T);		// Checks if a given row contains a certain value
+	bool rowContains(int, T);		// Checks if a given column contains a certain value
+	bool boxContains(int, int, T);		// Checks if a 3x3 box contains a certain value
 };
 
 template<typename T>
@@ -38,6 +38,7 @@ istream& operator>>(istream& in, Puzzle<T>& puzz)
 	{
 		for (int c = 0; c < puzz.size(); c++)
 		{
+			// Read the puzzle in space by space
 			in >> val;
 			puzz.board[r][c] = val;
 		}
@@ -48,6 +49,7 @@ istream& operator>>(istream& in, Puzzle<T>& puzz)
 template<typename T>
 ostream& operator<<(ostream& out, Puzzle<T>& puzz)
 {
+	// Print the puzzle space by space
 	for (int r = 0; r < puzz.size(); r++)
 	{
 		for (int c = 0; c < puzz.size(); c++)
@@ -97,6 +99,7 @@ T Puzzle<T>::get(int r, int c)
 template<typename T>
 bool Puzzle<T>::complete()
 {
+	// Does each space have a non-default value?
 	for (int r = 0; r < size(); r++)
 	{
 		for (int c = 0; c < size(); c++)
@@ -112,6 +115,7 @@ bool Puzzle<T>::complete()
 template<typename T>
 bool Puzzle<T>::colContains(int col, T val)
 {
+	// Does this column contain val?
 	for (int r = 0; r < size(); r++)
 	{
 		if (board[r][col] == val)
@@ -122,6 +126,7 @@ bool Puzzle<T>::colContains(int col, T val)
 template<typename T>
 bool Puzzle<T>::rowContains(int row, T val)
 {
+	// Uses STL find() algorithm to attempt to find val in the given row
 	return !(find(board[row].begin(), board[row].end(), val) == board[row].end());
 }
 
@@ -132,6 +137,7 @@ bool Puzzle<T>::boxContains(int row, int col, T val)
 	int br = row / nBoxes * nBoxes;		// These two lines compute the top left square in the box
 	int bc = col / nBoxes * nBoxes;
 
+	// Check each square in the box, return result
 	return ((board[br][bc] == val) || (board[br][bc + 1] == val) || (board[br][bc + 2] == val) ||
 		(board[br + 1][bc] == val) || (board[br + 1][bc + 1] == val) || (board[br + 1][bc + 2] == val) ||
 		(board[br + 2][bc] == val) || (board[br + 2][bc + 1] == val) || (board[br + 2][bc + 2] == val));
